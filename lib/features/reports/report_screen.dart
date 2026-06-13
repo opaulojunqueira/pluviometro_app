@@ -105,12 +105,6 @@ class _ReportScreenState extends State<ReportScreen> {
       );
       await _db.createReport(savedReport);
 
-      // Mostrar opção de compartilhar/imprimir
-      await Printing.layoutPdf(
-        onLayout: (format) async => Uint8List.fromList(pdfBytes),
-        name: fileName,
-      );
-
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

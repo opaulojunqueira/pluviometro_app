@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:printing/printing.dart';
 import 'package:pluviometro_app/features/reports/report_screen.dart';
 import 'package:pluviometro_app/shared/widgets/shared_app_bar.dart';
 import 'package:pluviometro_app/services/database_service.dart';
@@ -89,7 +90,38 @@ class ReportsTabState extends State<ReportsTab> {
     }
   }
 
-  Future<void> _openReport(SavedReport report) async {
+  Future<void> _viewReport(SavedReport report) async {
+    final file = File(report.filePath);
+    if (await file.exists()) {
+      try {
+        final pdfBytes = await file.readAsBytes();
+        await Printing.layoutPdf(
+          onLayout: (format) async => pdfBytes,
+          name: report.fileName,
+        );
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Erro ao visualizar arquivo: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Arquivo não encontrado'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _shareReport(SavedReport report) async {
     final file = File(report.filePath);
     if (await file.exists()) {
       try {
@@ -100,7 +132,7 @@ class ReportsTabState extends State<ReportsTab> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Erro ao abrir arquivo: $e'),
+              content: Text('Erro ao compartilhar arquivo: $e'),
               backgroundColor: Colors.red,
             ),
           );
@@ -194,20 +226,39 @@ class ReportsTabState extends State<ReportsTab> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     // Título
-                    const Text(
-                      'Relatórios',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Gere e gerencie seus relatórios de chuva',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
-                      ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Left accent bar
+                        Container(
+                          width: 4,
+                          height: 42,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Relatórios',
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Gere e gerencie seus relatórios de chuva',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey.shade500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
 
                     const SizedBox(height: 24),
@@ -458,51 +509,55 @@ class ReportsTabState extends State<ReportsTab> {
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(10),
+      child: InkWell(
+        onTap: () => _viewReport(report),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.red.shade50,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(Icons.picture_as_pdf, color: Colors.red.shade400),
               ),
-              child: Icon(Icons.picture_as_pdf, color: Colors.red.shade400),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    period,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      period,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'Gerado em ${dateFormat.format(report.generatedAt)} às ${timeFormat.format(report.generatedAt)}',
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                  ),
-                ],
+                    const SizedBox(height: 2),
+                    Text(
+                      'Gerado em ${dateFormat.format(report.generatedAt)} às ${timeFormat.format(report.generatedAt)}',
+                      style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            IconButton(
-              onPressed: () => _openReport(report),
-              icon: const Icon(Icons.open_in_new),
-              tooltip: 'Abrir',
-              color: Theme.of(context).primaryColor,
-            ),
-            IconButton(
-              onPressed: () => _deleteReport(report),
-              icon: const Icon(Icons.delete_outline),
-              tooltip: 'Excluir',
-              color: Colors.red,
-            ),
-          ],
+              IconButton(
+                onPressed: () => _shareReport(report),
+                icon: const Icon(Icons.share_outlined),
+                tooltip: 'Compartilhar',
+                color: Theme.of(context).primaryColor,
+              ),
+              IconButton(
+                onPressed: () => _deleteReport(report),
+                icon: const Icon(Icons.delete_outline),
+                tooltip: 'Excluir',
+                color: Colors.red,
+              ),
+            ],
+          ),
         ),
       ),
     );

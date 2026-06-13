@@ -13,7 +13,7 @@ O **Pluviômetro Digital** é um aplicativo Flutter voltado para produtores rura
 | Funcionalidade | Descrição |
 |---|---|
 | 📅 **Calendário** | Visualize dias com chuva (marcadores verdes), selecione um dia e registre ou edite a precipitação |
-| 📊 **Dashboard** | Totais mensal e anual, dias com chuva, classificação de intensidade, gráfico dos últimos 6 meses e média histórica |
+| 📊 **Dashboard** | Destaque da última leitura com **alerta de estiagem**, totais mensal e anual, dias com chuva, classificação de intensidade, gráfico dos últimos 6 meses, média histórica e **comparativo anual** |
 | 📄 **Relatórios** | Geração de PDF com resumo e log diário; compartilhamento e salvamento local |
 | ⚙️ **Configurações** | Perfil do usuário (nome, cidade, propriedade), gerenciamento de dados (export/import JSON, exclusão) e toggle de notificações |
 | 💾 **Armazenamento local** | Banco de dados SQLite 100% offline — nenhum dado sai do dispositivo |
@@ -41,7 +41,7 @@ O **Pluviômetro Digital** é um aplicativo Flutter voltado para produtores rura
 - **[file_picker](https://pub.dev/packages/file_picker)** — seleção de arquivos para importação
 - **[url_launcher](https://pub.dev/packages/url_launcher)** — links externos e e-mail
 - **[intl](https://pub.dev/packages/intl)** — formatação de datas em pt_BR
-- **[google_fonts](https://pub.dev/packages/google_fonts)** — tipografia (Poppins)
+- **[google_fonts](https://pub.dev/packages/google_fonts)** — tipografia (Plus Jakarta Sans)
 
 ---
 

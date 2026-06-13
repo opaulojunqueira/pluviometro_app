@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:pluviometro_app/features/reports/report_screen.dart';
 import 'package:pluviometro_app/shared/widgets/shared_app_bar.dart';
+import 'package:pluviometro_app/shared/widgets/loading_view.dart';
+import 'package:pluviometro_app/shared/widgets/screen_header.dart';
 import 'package:pluviometro_app/services/database_service.dart';
 import 'package:pluviometro_app/models/saved_report.dart';
 
@@ -169,22 +171,7 @@ class ReportsTabState extends State<ReportsTab> {
     return Scaffold(
       appBar: const SharedAppBar(),
       body: _isLoading
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    color: Theme.of(context).primaryColor,
-                    strokeWidth: 3,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Carregando...',
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
-                  ),
-                ],
-              ),
-            )
+          ? const LoadingView()
           : RefreshIndicator(
               onRefresh: _loadData,
               child: SingleChildScrollView(
@@ -193,21 +180,9 @@ class ReportsTabState extends State<ReportsTab> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Título
-                    const Text(
-                      'Relatórios',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Gere e gerencie seus relatórios de chuva',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
-                      ),
+                    const ScreenHeader(
+                      title: 'Relatórios',
+                      subtitle: 'Gere e gerencie seus relatórios de chuva',
                     ),
 
                     const SizedBox(height: 24),

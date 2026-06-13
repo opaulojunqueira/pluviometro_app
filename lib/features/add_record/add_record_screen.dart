@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pluviometro_app/services/database_service.dart';
 import 'package:pluviometro_app/models/rain_record.dart';
+import 'package:pluviometro_app/theme/app_colors.dart';
 
 class AddRecordScreen extends StatefulWidget {
   final DateTime selectedDate;
@@ -108,12 +109,13 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Date display
-              Card(
-                elevation: 0,
-                color: Colors.blue.shade50,
-                shape: RoundedRectangleBorder(
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.primarySoft,
                   borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(color: Colors.blue.shade100),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.18),
+                  ),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -122,7 +124,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
+                          color: AppColors.primary,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Icon(
@@ -135,12 +137,12 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               'Data do registro',
                               style: TextStyle(
-                                color: Colors.blue.shade700,
+                                color: AppColors.primary,
                                 fontSize: 14,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -149,10 +151,10 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                 "EEEE, dd 'de' MMMM 'de' yyyy",
                                 'pt_BR',
                               ).format(widget.selectedDate),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.blue.shade900,
+                                color: AppColors.textPrimary,
                               ),
                             ),
                           ],
@@ -354,10 +356,14 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
       label: Text('$value mm'),
       onPressed: () {
         _mmController.text = value.toString();
+        _mmController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _mmController.text.length),
+        );
       },
-      backgroundColor: Colors.blue.shade50,
-      labelStyle: TextStyle(
-        color: Colors.blue.shade700,
+      backgroundColor: AppColors.primarySoft,
+      side: BorderSide.none,
+      labelStyle: const TextStyle(
+        color: AppColors.primary,
         fontWeight: FontWeight.w600,
       ),
     );

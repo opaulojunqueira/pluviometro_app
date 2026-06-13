@@ -2,6 +2,7 @@
 import 'package:url_launcher/url_launcher.dart';
 import 'package:pluviometro_app/services/preferences_service.dart';
 import 'package:pluviometro_app/shared/widgets/shared_app_bar.dart';
+import 'package:pluviometro_app/shared/widgets/screen_header.dart';
 import 'package:pluviometro_app/features/profile/profile_screen.dart';
 import 'package:pluviometro_app/features/data_management/manage_data_screen.dart';
 
@@ -83,14 +84,9 @@ class SettingsTabState extends State<SettingsTab> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const Text(
-            'Configurações',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Personalize o app do seu jeito',
-            style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+          const ScreenHeader(
+            title: 'Configurações',
+            subtitle: 'Personalize o app do seu jeito',
           ),
           const SizedBox(height: 24),
 

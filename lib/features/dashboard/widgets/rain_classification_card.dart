@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pluviometro_app/theme/app_colors.dart';
 import 'package:pluviometro_app/features/dashboard/widgets/rain_classification.dart';
 
 /// Shows the agronomy-based classification of the current month's rainfall.
@@ -46,9 +47,9 @@ class RainClassificationCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 2),
-          Text(
+          const Text(
             'no mês atual',
-            style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+            style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
           ),
           const SizedBox(height: 4),
           Text(

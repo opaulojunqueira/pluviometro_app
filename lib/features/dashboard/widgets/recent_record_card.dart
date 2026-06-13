@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pluviometro_app/models/rain_record.dart';
+import 'package:pluviometro_app/theme/app_colors.dart';
 
 /// Single rainfall record card shown in the dashboard's "recent records" list.
 class RecentRecordCard extends StatelessWidget {
@@ -11,38 +12,42 @@ class RecentRecordCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
         leading: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.blue.shade50,
+            color: AppColors.primarySoft,
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Icon(Icons.water_drop, color: Colors.blue.shade700),
+          child: const Icon(Icons.water_drop, color: AppColors.primary),
         ),
         title: Text(
           DateFormat('dd/MM/yyyy').format(record.date),
-          style: const TextStyle(fontWeight: FontWeight.w600),
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
         ),
         subtitle: record.observation != null && record.observation!.isNotEmpty
             ? Text(
                 record.observation!,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+                style: const TextStyle(color: AppColors.textSecondary),
               )
             : null,
         trailing: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: Colors.blue.shade100,
+            color: AppColors.primarySoft,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
             '${record.millimeters.toStringAsFixed(1)} mm',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.blue.shade800,
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              color: AppColors.primary,
             ),
           ),
         ),
@@ -62,25 +67,25 @@ class DashboardEmptyState extends StatelessWidget {
         padding: const EdgeInsets.all(32),
         child: Column(
           children: [
-            Icon(
+            const Icon(
               Icons.cloud_off_outlined,
-              size: 64,
-              color: Colors.grey.shade400,
+              size: 56,
+              color: AppColors.textMuted,
             ),
             const SizedBox(height: 16),
-            Text(
+            const Text(
               'Nenhum registro ainda',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 17,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade600,
+                color: AppColors.textSecondary,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Vá para o calendário e adicione seu primeiro registro de chuva!',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey.shade500),
+              style: TextStyle(color: AppColors.textSecondary.withValues(alpha: 0.85)),
             ),
           ],
         ),

@@ -118,6 +118,41 @@ class DatabaseService {
     return result.map((map) => RainRecord.fromMap(map)).toList();
   }
 
+  // READ - Get the most recent record that actually had rain (mm > 0).
+  // Used for the drought/last-rain indicator on the dashboard.
+  Future<RainRecord?> getLastRainyRecord() async {
+    final db = await database;
+    final result = await db.query(
+      'rain_records',
+      where: 'millimeters > 0',
+      orderBy: 'date DESC',
+      limit: 1,
+    );
+    if (result.isEmpty) return null;
+    return RainRecord.fromMap(result.first);
+  }
+
+  // READ - Get total mm for the last [yearsBack] years (for annual comparison).
+  // Returns a map of year → total mm, oldest first.
+  Future<Map<int, double>> getYearlyTotals(int yearsBack) async {
+    final db = await database;
+    final now = DateTime.now();
+    final Map<int, double> totals = {};
+
+    for (int i = yearsBack - 1; i >= 0; i--) {
+      final year = now.year - i;
+      final result = await db.rawQuery(
+        "SELECT SUM(millimeters) as total FROM rain_records WHERE date LIKE ?",
+        ['$year%'],
+      );
+      final val = result.isEmpty || result.first['total'] == null
+          ? 0.0
+          : (result.first['total'] as num).toDouble();
+      totals[year] = val;
+    }
+    return totals;
+  }
+
   // READ - Get total mm by year (efficient, no full load)
   Future<double> getTotalMmByYear(int year) async {
     final db = await database;

@@ -3,13 +3,17 @@ import 'package:intl/intl.dart';
 import 'package:pluviometro_app/services/database_service.dart';
 import 'package:pluviometro_app/services/preferences_service.dart';
 import 'package:pluviometro_app/models/rain_record.dart';
+import 'package:pluviometro_app/theme/app_colors.dart';
 import 'package:pluviometro_app/shared/widgets/shared_app_bar.dart';
+import 'package:pluviometro_app/shared/widgets/loading_view.dart';
 import 'package:pluviometro_app/features/dashboard/widgets/stat_card.dart';
 import 'package:pluviometro_app/features/dashboard/widgets/rainy_days_card.dart';
 import 'package:pluviometro_app/features/dashboard/widgets/rain_classification_card.dart';
 import 'package:pluviometro_app/features/dashboard/widgets/historical_avg_card.dart';
 import 'package:pluviometro_app/features/dashboard/widgets/monthly_bar_chart.dart';
 import 'package:pluviometro_app/features/dashboard/widgets/recent_record_card.dart';
+import 'package:pluviometro_app/features/dashboard/widgets/last_reading_card.dart';
+import 'package:pluviometro_app/features/dashboard/widgets/yearly_comparison_card.dart';
 
 class DashboardTab extends StatefulWidget {
   const DashboardTab({super.key});
@@ -23,11 +27,13 @@ class DashboardTabState extends State<DashboardTab> {
   final PreferencesService _prefs = PreferencesService.instance;
 
   List<RainRecord> _recentRecords = [];
+  RainRecord? _lastRainyRecord;
   double _monthlyTotal = 0.0;
   double _yearlyTotal = 0.0;
   double _historicalMonthlyAvg = 0.0;
   int _rainyDaysThisMonth = 0;
   Map<String, double> _monthlyTotals = {};
+  Map<int, double> _yearlyTotals = {};
   bool _isLoading = true;
 
   @override
@@ -50,6 +56,8 @@ class DashboardTabState extends State<DashboardTab> {
     final monthRecords = await _db.getRecordsByMonth(now.year, now.month);
     final yearlyTotal = await _db.getTotalMmByYear(now.year);
     final monthlyTotals = await _db.getMonthlyTotals(6);
+    final lastRainyRecord = await _db.getLastRainyRecord();
+    final yearlyTotals = await _db.getYearlyTotals(3);
 
     // Exit early if the widget was unmounted during async database queries
     if (!mounted) return;
@@ -71,10 +79,12 @@ class DashboardTabState extends State<DashboardTab> {
 
     setState(() {
       _recentRecords = recentRecords;
+      _lastRainyRecord = lastRainyRecord;
       _monthlyTotal = monthlyTotal;
       _yearlyTotal = yearlyTotal;
       _rainyDaysThisMonth = rainyDays.length;
       _monthlyTotals = monthlyTotals;
+      _yearlyTotals = yearlyTotals;
       _historicalMonthlyAvg = historicalAvg;
       _isLoading = false;
     });
@@ -102,25 +112,7 @@ class DashboardTabState extends State<DashboardTab> {
     return Scaffold(
       appBar: const SharedAppBar(),
       body: _isLoading
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    color: Theme.of(context).primaryColor,
-                    strokeWidth: 3,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Carregando...',
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-            )
+          ? const LoadingView()
           : RefreshIndicator(
               onRefresh: _loadData,
               child: ListView(
@@ -131,58 +123,75 @@ class DashboardTabState extends State<DashboardTab> {
                     '${_getGreeting()}, ${_getFirstName()}!',
                     style: const TextStyle(
                       fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   if (propertyName.isNotEmpty)
-                    Text(
-                      propertyName,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey.shade600,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Text(
+                        propertyName,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                     ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
+
+                  // Hero: última leitura + alerta de estiagem
+                  if (_recentRecords.isNotEmpty) ...[
+                    LastReadingCard(
+                      lastRecord: _recentRecords.first,
+                      lastRainyRecord: _lastRainyRecord,
+                    ),
+                    const SizedBox(height: 12),
+                  ],
 
                   // Monthly and yearly totals
-                  Row(
-                    children: [
-                      Expanded(
-                        child: StatCard(
-                          icon: Icons.water_drop,
-                          iconColor: Colors.blue,
-                          title: 'Este mês',
-                          subtitle: monthName.toUpperCase(),
-                          value: '${_monthlyTotal.toStringAsFixed(1)} mm',
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: StatCard(
+                            icon: Icons.water_drop,
+                            iconColor: AppColors.primary,
+                            title: 'Este mês',
+                            subtitle: monthName.toUpperCase(),
+                            value: '${_monthlyTotal.toStringAsFixed(1)} mm',
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: StatCard(
-                          icon: Icons.calendar_today,
-                          iconColor: Colors.green,
-                          title: 'Este ano',
-                          subtitle: '${now.year}',
-                          value: '${_yearlyTotal.toStringAsFixed(1)} mm',
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: StatCard(
+                            icon: Icons.calendar_today,
+                            iconColor: AppColors.secondary,
+                            title: 'Este ano',
+                            subtitle: '${now.year}',
+                            value: '${_yearlyTotal.toStringAsFixed(1)} mm',
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 12),
 
                   // Rainy days count + rain intensity classification
-                  Row(
-                    children: [
-                      Expanded(
-                        child: RainyDaysCard(rainyDays: _rainyDaysThisMonth),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: RainClassificationCard(
-                          monthlyMm: _monthlyTotal,
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: RainyDaysCard(rainyDays: _rainyDaysThisMonth),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: RainClassificationCard(monthlyMm: _monthlyTotal),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 12),
 
@@ -195,7 +204,14 @@ class DashboardTabState extends State<DashboardTab> {
 
                   // 6-month animated bar chart
                   MonthlyBarChart(monthlyTotals: _monthlyTotals),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 12),
+
+                  // Annual comparison (shown only when there is yearly data)
+                  if (_yearlyTotals.values.any((v) => v > 0)) ...[
+                    YearlyComparisonCard(yearlyTotals: _yearlyTotals),
+                    const SizedBox(height: 12),
+                  ],
+                  const SizedBox(height: 12),
 
                   // Recent records section
                   Row(
@@ -204,11 +220,12 @@ class DashboardTabState extends State<DashboardTab> {
                       const Text(
                         'Registros Recentes',
                         style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 19,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
                         ),
                       ),
-                      Icon(Icons.history, color: Colors.grey.shade600),
+                      const Icon(Icons.history, color: AppColors.textMuted),
                     ],
                   ),
                   const SizedBox(height: 16),

@@ -1,4 +1,5 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:pluviometro_app/theme/app_colors.dart';
 import 'package:pluviometro_app/features/dashboard/dashboard_tab.dart';
 import 'package:pluviometro_app/features/calendar/calendar_tab.dart';
 import 'package:pluviometro_app/features/reports/reports_tab.dart';
@@ -62,14 +63,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: _tabs),
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
-          ],
+        decoration: const BoxDecoration(
+          border: Border(top: BorderSide(color: AppColors.border)),
         ),
         child: BottomNavigationBar(
           currentIndex: _currentIndex,

@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:pluviometro_app/theme/app_colors.dart';
 import 'package:pluviometro_app/features/auth/skip_login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -13,27 +14,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
+  // Cada página usa uma das três cores oficiais da marca (azul-chuva, verde-agro
+  // e âmbar/sol), reforçando a identidade visual de forma coesa.
   final List<OnboardingData> _pages = [
     OnboardingData(
       icon: Icons.water_drop,
       title: 'Registre a Chuva',
       description:
           'Anote facilmente a quantidade de chuva em milímetros que caiu na sua propriedade a cada dia.',
-      color: const Color(0xFF1565C0),
+      color: AppColors.primary,
     ),
     OnboardingData(
       icon: Icons.calendar_month,
       title: 'Acompanhe o Histórico',
       description:
           'Visualize todos os seus registros em um calendário intuitivo. Veja os dias que choveu e a quantidade acumulada.',
-      color: const Color(0xFF1976D2),
+      color: AppColors.secondary,
     ),
     OnboardingData(
       icon: Icons.agriculture,
       title: 'Planeje sua Produção',
       description:
           'Use os dados de chuva para tomar melhores decisões no campo. Simples e prático para o produtor rural.',
-      color: const Color(0xFF607D8B),
+      color: AppColors.amber,
     ),
   ];
 
@@ -140,18 +143,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Container(
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
-              color: data.color.withOpacity(0.1),
+              color: data.color.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(data.icon, size: 100, color: data.color),
+            child: Icon(data.icon, size: 96, color: data.color),
           ),
           const SizedBox(height: 48),
           Text(
             data.title,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
+              fontSize: 27,
+              fontWeight: FontWeight.w700,
               color: data.color,
             ),
           ),
@@ -159,9 +162,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Text(
             data.description,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
-              color: Colors.grey.shade600,
+              color: AppColors.textSecondary,
               height: 1.5,
             ),
           ),

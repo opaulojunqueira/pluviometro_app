@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pluviometro_app/theme/app_colors.dart';
 
 /// Animated bar chart displaying the last 6 months of total rainfall.
 /// The current month bar is highlighted with the primary theme color.
@@ -26,11 +27,7 @@ class MonthlyBarChart extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.bar_chart,
-                  color: Theme.of(context).primaryColor,
-                  size: 20,
-                ),
+                const Icon(Icons.bar_chart, color: AppColors.primary, size: 20),
                 const SizedBox(width: 8),
                 const Text(
                   'Chuva — Últimos 6 meses',
@@ -64,10 +61,10 @@ class MonthlyBarChart extends StatelessWidget {
                               entry.value.toStringAsFixed(0),
                               style: TextStyle(
                                 fontSize: 9,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w700,
                                 color: isCurrentMonth
-                                    ? Theme.of(context).primaryColor
-                                    : Colors.grey.shade600,
+                                    ? AppColors.primary
+                                    : AppColors.textSecondary,
                               ),
                             ),
                           const SizedBox(height: 2),
@@ -78,8 +75,8 @@ class MonthlyBarChart extends StatelessWidget {
                                 (entry.value > 0 ? 4 : 2),
                             decoration: BoxDecoration(
                               color: isCurrentMonth
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.blue.shade200,
+                                  ? AppColors.primary
+                                  : AppColors.primary.withValues(alpha: 0.28),
                               borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(4),
                               ),
@@ -91,11 +88,11 @@ class MonthlyBarChart extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: isCurrentMonth
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
+                                  ? FontWeight.w700
+                                  : FontWeight.w400,
                               color: isCurrentMonth
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.grey.shade600,
+                                  ? AppColors.primary
+                                  : AppColors.textSecondary,
                             ),
                           ),
                         ],

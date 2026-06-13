@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:pluviometro_app/services/preferences_service.dart';
+import 'package:pluviometro_app/theme/app_colors.dart';
 import 'package:pluviometro_app/features/onboarding/onboarding_screen.dart';
 import 'package:pluviometro_app/features/home/home_screen.dart';
 
@@ -66,67 +67,63 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF1565C0), Color(0xFF0D47A1)],
-          ),
-        ),
-        child: Center(
-          child: AnimatedBuilder(
-            animation: _controller,
-            builder: (context, child) {
-              return FadeTransition(
-                opacity: _fadeAnimation,
-                child: ScaleTransition(
-                  scale: _scaleAnimation,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(24),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.water_drop,
-                          size: 80,
-                          color: Colors.white,
-                        ),
+      backgroundColor: AppColors.primary,
+      body: Center(
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return FadeTransition(
+              opacity: _fadeAnimation,
+              child: ScaleTransition(
+                scale: _scaleAnimation,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.14),
+                        shape: BoxShape.circle,
                       ),
-                      const SizedBox(height: 24),
-                      const Text(
-                        'Pluviômetro',
-                        style: TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 1.5,
-                        ),
+                      child: const Icon(
+                        Icons.water_drop,
+                        size: 76,
+                        color: Colors.white,
                       ),
-                      const Text(
-                        'Digital',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.white70,
-                          letterSpacing: 3,
-                        ),
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Pluviômetro',
+                      style: TextStyle(
+                        fontSize: 34,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
                       ),
-                      const SizedBox(height: 48),
-                      const CircularProgressIndicator(
+                    ),
+                    const Text(
+                      'DIGITAL',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white70,
+                        letterSpacing: 6,
+                      ),
+                    ),
+                    const SizedBox(height: 48),
+                    const SizedBox(
+                      width: 26,
+                      height: 26,
+                      child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        strokeWidth: 3,
+                        strokeWidth: 2.5,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

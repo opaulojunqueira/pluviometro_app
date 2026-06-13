@@ -3,8 +3,11 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:pluviometro_app/services/database_service.dart';
 import 'package:pluviometro_app/models/rain_record.dart';
+import 'package:pluviometro_app/theme/app_colors.dart';
 import 'package:pluviometro_app/features/add_record/add_record_screen.dart';
 import 'package:pluviometro_app/shared/widgets/shared_app_bar.dart';
+import 'package:pluviometro_app/shared/widgets/loading_view.dart';
+import 'package:pluviometro_app/shared/widgets/screen_header.dart';
 
 class CalendarTab extends StatefulWidget {
   const CalendarTab({super.key});
@@ -114,7 +117,7 @@ class CalendarTabState extends State<CalendarTab> {
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message), backgroundColor: Colors.orange),
+        SnackBar(content: Text(message), backgroundColor: AppColors.warning),
       );
       return;
     }
@@ -172,7 +175,7 @@ class CalendarTabState extends State<CalendarTab> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Registro excluído com sucesso'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.danger,
         ),
       );
     }
@@ -184,60 +187,15 @@ class CalendarTabState extends State<CalendarTab> {
     return Scaffold(
       appBar: const SharedAppBar(),
       body: _isLoading
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    color: Theme.of(context).primaryColor,
-                    strokeWidth: 3,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Carregando...',
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
-                  ),
-                ],
-              ),
-            )
+          ? const LoadingView()
           : Column(
               children: [
-                // Title section with left accent bar for visual consistency
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Left accent bar
-                      Container(
-                        width: 4,
-                        height: 42,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Calendário',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'Selecione um dia para ver ou adicionar',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey.shade500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                // Cabeçalho padrão (barra de acento + título + subtítulo)
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
+                  child: ScreenHeader(
+                    title: 'Calendário',
+                    subtitle: 'Selecione um dia para ver ou adicionar',
                   ),
                 ),
 
@@ -469,22 +427,22 @@ class CalendarTabState extends State<CalendarTab> {
   }
 
   Widget _buildEmptyDayState() {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.cloud_outlined, size: 64, color: Colors.grey.shade400),
-          const SizedBox(height: 16),
+          Icon(Icons.cloud_outlined, size: 60, color: AppColors.textMuted),
+          SizedBox(height: 16),
           Text(
             'Sem registros neste dia',
-            style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+            style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(
             'Toque no botão "Adicionar" para registrar a chuva',
-            style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+            style: TextStyle(fontSize: 14, color: AppColors.textMuted),
           ),
-          const SizedBox(height: 80), // Space for FAB
+          SizedBox(height: 80), // Space for FAB
         ],
       ),
     );

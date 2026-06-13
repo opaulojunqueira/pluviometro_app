@@ -5,6 +5,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:printing/printing.dart';
 import 'package:pluviometro_app/features/reports/report_screen.dart';
 import 'package:pluviometro_app/shared/widgets/shared_app_bar.dart';
+import 'package:pluviometro_app/shared/widgets/loading_view.dart';
+import 'package:pluviometro_app/shared/widgets/screen_header.dart';
 import 'package:pluviometro_app/services/database_service.dart';
 import 'package:pluviometro_app/models/saved_report.dart';
 
@@ -201,22 +203,7 @@ class ReportsTabState extends State<ReportsTab> {
     return Scaffold(
       appBar: const SharedAppBar(),
       body: _isLoading
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    color: Theme.of(context).primaryColor,
-                    strokeWidth: 3,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Carregando...',
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
-                  ),
-                ],
-              ),
-            )
+          ? const LoadingView()
           : RefreshIndicator(
               onRefresh: _loadData,
               child: SingleChildScrollView(
@@ -225,40 +212,9 @@ class ReportsTabState extends State<ReportsTab> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Título
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Left accent bar
-                        Container(
-                          width: 4,
-                          height: 42,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Relatórios',
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              'Gere e gerencie seus relatórios de chuva',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.grey.shade500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                    const ScreenHeader(
+                      title: 'Relatórios',
+                      subtitle: 'Gere e gerencie seus relatórios de chuva',
                     ),
 
                     const SizedBox(height: 24),

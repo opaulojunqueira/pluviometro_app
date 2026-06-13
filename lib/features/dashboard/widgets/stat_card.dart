@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pluviometro_app/theme/app_colors.dart';
 
 /// A compact stat card displaying an icon, label, subtitle, and a prominent value.
 /// Used in the dashboard for monthly and yearly rainfall totals.
@@ -43,16 +44,17 @@ class StatCard extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 13,
-                          color: Colors.grey.shade600,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
                         ),
                       ),
                       Text(
                         subtitle,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 11,
-                          color: Colors.grey.shade400,
+                          color: AppColors.textMuted,
                         ),
                       ),
                     ],
@@ -65,7 +67,7 @@ class StatCard extends StatelessWidget {
               value,
               style: TextStyle(
                 fontSize: 22,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w700,
                 color: iconColor,
               ),
             ),

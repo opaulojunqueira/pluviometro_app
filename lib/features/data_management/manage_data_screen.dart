@@ -8,6 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:pluviometro_app/services/database_service.dart';
 import 'package:pluviometro_app/services/preferences_service.dart';
 import 'package:pluviometro_app/models/rain_record.dart';
+import 'package:pluviometro_app/theme/app_colors.dart';
 
 class ManageDataScreen extends StatefulWidget {
   const ManageDataScreen({super.key});
@@ -142,8 +143,13 @@ class _ManageDataScreenState extends State<ManageDataScreen> {
         propertyName = data['propertyName'] as String?;
       }
 
-      // Confirmar importação
-      final confirmed = await showDialog<bool>(
+      if (!mounted) return;
+
+      // Confirmar importação.
+      // Tipamos o resultado como String ('cancel' | 'records_only' | 'all')
+      // para evitar o erro de cast que ocorria ao retornar uma String de um
+      // showDialog<bool> — antes a opção "Só Registros" quebrava em runtime.
+      final choice = await showDialog<String>(
         context: context,
         builder: (context) => AlertDialog(
           icon: Icon(
@@ -178,7 +184,7 @@ class _ManageDataScreenState extends State<ManageDataScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context, false),
+              onPressed: () => Navigator.pop(context, 'cancel'),
               child: const Text('Cancelar'),
             ),
             OutlinedButton(
@@ -186,17 +192,17 @@ class _ManageDataScreenState extends State<ManageDataScreen> {
               child: const Text('Só Registros'),
             ),
             ElevatedButton(
-              onPressed: () => Navigator.pop(context, true),
+              onPressed: () => Navigator.pop(context, 'all'),
               child: const Text('Importar Tudo'),
             ),
           ],
         ),
       );
 
-      if (confirmed == false || confirmed == null) return;
+      if (choice == null || choice == 'cancel') return;
 
-      // Importar dados do perfil se solicitado
-      if (confirmed == true) {
+      // Importar dados do perfil apenas quando o usuário escolher "Importar Tudo".
+      if (choice == 'all') {
         if (userName != null && userName.isNotEmpty) {
           await _prefs.setUserName(userName);
         }
@@ -305,33 +311,19 @@ class _ManageDataScreenState extends State<ManageDataScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Estatísticas
+          // Estatísticas — bloco sólido e limpo (sem gradiente nem sombra pesada)
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor.withOpacity(0.8),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+              color: AppColors.primary,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(context).primaryColor.withOpacity(0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
             ),
             child: Row(
               children: [
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -346,10 +338,10 @@ class _ManageDataScreenState extends State<ManageDataScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _isLoading ? '...' : '$_totalRecords',
+                        _isLoading ? '—' : '$_totalRecords',
                         style: const TextStyle(
                           fontSize: 32,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w700,
                           color: Colors.white,
                         ),
                       ),
@@ -357,7 +349,7 @@ class _ManageDataScreenState extends State<ManageDataScreen> {
                         'registros salvos',
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withValues(alpha: 0.9),
                         ),
                       ),
                     ],

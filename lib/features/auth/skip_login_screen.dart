@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:pluviometro_app/services/preferences_service.dart';
+import 'package:pluviometro_app/theme/app_colors.dart';
 import 'package:pluviometro_app/features/home/home_screen.dart';
 
 class SkipLoginScreen extends StatefulWidget {
@@ -140,18 +141,19 @@ class _SkipLoginScreenState extends State<SkipLoginScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.blue.shade50,
+                    color: AppColors.primarySoft,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Row(
+                  child: const Row(
                     children: [
-                      Icon(Icons.info_outline, color: Colors.blue.shade700),
-                      const SizedBox(width: 12),
+                      Icon(Icons.lock_outline, color: AppColors.primary),
+                      SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'Você pode criar uma conta a qualquer momento nas configurações.',
+                          'Seus dados ficam salvos apenas neste aparelho e podem ser '
+                          'editados quando quiser no seu perfil.',
                           style: TextStyle(
-                            color: Colors.blue.shade700,
+                            color: AppColors.primary,
                             fontSize: 14,
                           ),
                         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pluviometro_app/theme/app_colors.dart';
 
 /// Card showing the historical monthly average rainfall and comparing it
 /// to the current month. Shows an up/down badge if history is available.
@@ -30,13 +31,13 @@ class HistoricalAvgCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.teal.shade50,
+                color: AppColors.primarySoft,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(
-                Icons.trending_up,
-                color: Colors.teal.shade600,
-                size: 26,
+              child: const Icon(
+                Icons.insights,
+                color: AppColors.primary,
+                size: 24,
               ),
             ),
             const SizedBox(width: 16),
@@ -47,7 +48,10 @@ class HistoricalAvgCard extends StatelessWidget {
                 children: [
                   const Text(
                     'Média histórica mensal',
-                    style: TextStyle(fontSize: 13, color: Colors.grey),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -56,7 +60,8 @@ class HistoricalAvgCard extends StatelessWidget {
                         : 'Sem dados suficientes',
                     style: const TextStyle(
                       fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                 ],
@@ -71,8 +76,8 @@ class HistoricalAvgCard extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: isAbove
-                      ? Colors.green.shade50
-                      : Colors.orange.shade50,
+                      ? AppColors.successSoft
+                      : AppColors.warningSoft,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -81,19 +86,15 @@ class HistoricalAvgCard extends StatelessWidget {
                     Icon(
                       isAbove ? Icons.arrow_upward : Icons.arrow_downward,
                       size: 14,
-                      color: isAbove
-                          ? Colors.green.shade700
-                          : Colors.orange.shade700,
+                      color: isAbove ? AppColors.success : AppColors.warning,
                     ),
                     const SizedBox(width: 2),
                     Text(
                       '${diff.abs().toStringAsFixed(1)} mm',
                       style: TextStyle(
                         fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: isAbove
-                            ? Colors.green.shade700
-                            : Colors.orange.shade700,
+                        fontWeight: FontWeight.w700,
+                        color: isAbove ? AppColors.success : AppColors.warning,
                       ),
                     ),
                   ],

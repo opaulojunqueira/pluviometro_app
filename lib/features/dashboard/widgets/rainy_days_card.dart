@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pluviometro_app/theme/app_colors.dart';
 
-/// Displays the number of rainy days in the current month
-/// with a gradient background matching the app's primary color.
+/// Mostra o número de dias com chuva no mês atual.
+///
+/// Estilo "soft + borda" — limpo e sólido, sem gradiente nem sombra pesada —
+/// para combinar lado a lado com o card de classificação de chuva.
 class RainyDaysCard extends StatelessWidget {
   final int rainyDays;
 
@@ -12,22 +15,9 @@ class RainyDaysCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Theme.of(context).primaryColor,
-            Theme.of(context).primaryColor.withValues(alpha: 0.8),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: AppColors.primarySoft,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.18)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,33 +25,31 @@ class RainyDaysCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
+              color: AppColors.primary.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.cloud, color: Colors.white, size: 22),
+            child: const Icon(Icons.cloud, color: AppColors.primary, size: 22),
           ),
           const SizedBox(height: 10),
           Text(
             '$rainyDays',
             style: const TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+              fontSize: 30,
+              fontWeight: FontWeight.w700,
+              color: AppColors.primary,
             ),
           ),
-          Text(
+          const Text(
             'dias com chuva',
             style: TextStyle(
-              fontSize: 12,
-              color: Colors.white.withValues(alpha: 0.9),
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
             ),
           ),
-          Text(
+          const Text(
             'neste mês',
-            style: TextStyle(
-              fontSize: 11,
-              color: Colors.white.withValues(alpha: 0.7),
-            ),
+            style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
           ),
         ],
       ),
